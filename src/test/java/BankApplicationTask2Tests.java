@@ -18,7 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringJUnitConfig(locations = "classpath:application-context.xml")
+@SpringJUnitConfig(locations = "classpath:test-clients.xml")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BankApplicationTask2Tests {
@@ -40,14 +40,14 @@ public class BankApplicationTask2Tests {
     @BeforeEach
     public void init() {
         try {
-            BankApplication.class.getMethod("initialize", ApplicationContext.class).invoke(null, applicationContext);
+            //BankApplication.class.getMethod("initialize", ApplicationContext.class).invoke(null, applicationContext);
+            BankApplication.initialize(applicationContext);
         } catch (Exception e) {
             e.printStackTrace();
             // ignore
         }
-
         // TODO you can replace code above with this when will have the method
-//        BankApplication.initialize(applicationContext);
+
     }
 
     @Test
@@ -158,5 +158,9 @@ public class BankApplicationTask2Tests {
         assertEquals(-500, bankReport.getBankCreditSum());
 
     }
+
+
+
+
 
 }

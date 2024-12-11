@@ -10,7 +10,9 @@ public abstract class AbstractAccount {
 
     public AbstractAccount() {
     }
-
+    public AbstractAccount(double balance) {
+        this.balance = balance;
+    }
     public void deposit(double amount) {
         if (amount < 0) {
             return;

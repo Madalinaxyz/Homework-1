@@ -13,6 +13,10 @@ public class CheckingAccount extends AbstractAccount {
 
         setOverdraft(overdraft);
     }
+    public CheckingAccount(double balance, double overdraft) { // New constructor
+        super(balance); // Set balance
+        setOverdraft(overdraft); // Set overdraft
+    }
 
     public void setOverdraft(double amount) {
 

@@ -83,6 +83,20 @@ public class Client {
 
         repository.update(this);
     }
+    public void setAccounts(List<AbstractAccount> accounts) {
+        if (accounts == null) {
+            this.accounts.clear();
+        } else {
+            this.accounts.clear();
+            this.accounts.addAll(accounts);
+        }
+        // Safeguard against null repository
+        if (repository != null) {
+            repository.update(this);
+        }
+    }
+
+
 
     public List<AbstractAccount> getAccounts() {
 
