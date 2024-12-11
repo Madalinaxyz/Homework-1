@@ -10,8 +10,19 @@ import com.luxoft.bankapp.service.BankingImpl;
 import com.luxoft.bankapp.model.Client.Gender;
 import com.luxoft.bankapp.service.storage.ClientRepository;
 import com.luxoft.bankapp.service.storage.MapClientRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+
+@Configuration // Marks this class as a configuration class for Spring
+@ComponentScan("com.luxoft.bankapp") // Scans the specified package for components
 
 public class BankApplication {
 
@@ -26,7 +37,8 @@ public class BankApplication {
         // Step 1: Load Spring Application Context
 
 //        ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml", "test-clients.xml");
-        ApplicationContext context = new ClassPathXmlApplicationContext("test-clients.xml");
+//        ApplicationContext context = new ClassPathXmlApplicationContext("test-clients.xml");
+            ApplicationContext context = new AnnotationConfigApplicationContext(BankApplication.class);
 
         // Step 2: Use the initialize method to prepare the Banking bean
         Banking banking = initialize(context);
@@ -38,6 +50,55 @@ public class BankApplication {
         // Call the updated bankReportsDemo
         bankReportsDemo(context);
     }
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer placeholderConfigurer() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        configurer.setLocation(new ClassPathResource("clients.properties"));
+        return configurer;
+    }
+    // Account Beans
+    @Bean
+    public SavingAccount savingAccount1(@Value("${client1.savingAccount.balance}") double balance) {
+        return new SavingAccount(balance);
+    }
+
+    @Bean
+    public CheckingAccount checkingAccount1(
+            @Value("${client1.checkingAccount.balance}") double balance,
+            @Value("${client1.checkingAccount.overdraft}") double overdraft) {
+        return new CheckingAccount(balance, overdraft);
+    }
+
+    @Bean
+    public CheckingAccount checkingAccount2(
+            @Value("${client2.checkingAccount.balance}") double balance,
+            @Value("${client2.checkingAccount.overdraft}") double overdraft) {
+        return new CheckingAccount(balance, overdraft);
+    }
+    @Bean
+    public Client client1(
+            @Value("${client1.name}") String name,
+            @Value("${client1.city}") String city,
+            @Qualifier("savingAccount1") SavingAccount savingAccount1,
+            @Qualifier("checkingAccount1") CheckingAccount checkingAccount1) {
+        Client client = new Client(name, Client.Gender.MALE);
+        client.setCity(city);
+        client.addAccount(savingAccount1);
+        client.addAccount(checkingAccount1);
+        return client;
+    }
+
+    @Bean
+    public Client client2(
+            @Value("${client2.name}") String name,
+            @Value("${client2.city}") String city,
+            @Qualifier("checkingAccount2") CheckingAccount checkingAccount2) {
+        Client client = new Client(name, Client.Gender.MALE);
+        client.setCity(city);
+        client.addAccount(checkingAccount2);
+        return client;
+    }
+
 
     public static void bankReportsDemo(ApplicationContext context) {
         System.out.println("\n=== Using BankReportService ===\n");

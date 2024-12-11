@@ -5,10 +5,11 @@ import com.luxoft.bankapp.exceptions.ClientNotFoundException;
 import com.luxoft.bankapp.model.*;
 import com.luxoft.bankapp.service.storage.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Service
 public class BankingImpl implements Banking {
 
     @Autowired
